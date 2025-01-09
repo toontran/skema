@@ -92,9 +92,13 @@ class KernelFDISVD {
 };
 
 typedef Kokkos::View<double**, Kokkos::LayoutLeft> matrix_type;
+// void kernel_fdisvd(const matrix_type&,
+//                    const size_t,
+//                    const size_t,
+//                    const AlgParams&);
 void kernel_fdisvd(const matrix_type&,
-                   const size_t,
-                   const size_t,
+                   const size_type,
+                   const size_type,
                    const AlgParams&);
 
 #endif /* KERNEL_FREQUENT_DIRECTIONS_INCREMENTAL_SVD_H */

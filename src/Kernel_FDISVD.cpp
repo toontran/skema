@@ -64,10 +64,15 @@ using unmanaged_matrix_type =
 /* Constructor */
 /* ************************************************************************* */
 template <class KernelType, class SamplerType>
-KernelFDISVD<KernelType, SamplerType>::KernelFDISVD(const size_t nrow,
-                                                    const size_t ncol,
-                                                    const size_t rank,
-                                                    const size_t wsize,
+// KernelFDISVD<KernelType, SamplerType>::KernelFDISVD(const size_t nrow,
+//                                                     const size_t ncol,
+//                                                     const size_t rank,
+//                                                     const size_t wsize,
+//                                                     const AlgParams& algParams)
+KernelFDISVD<KernelType, SamplerType>::KernelFDISVD(const size_type nrow,
+                                                    const size_type ncol,
+                                                    const size_type rank,
+                                                    const size_type wsize,
                                                     const AlgParams& algParams)
     : nrow_(nrow),
       ncol_(ncol),
@@ -1280,7 +1285,8 @@ void kernel_fdisvd(const matrix_type& A,
                    const size_type rank,
                    const size_type windowsize,
                    const AlgParams& algParams) {
-  auto min_size = std::min(A.extent(0), windowsize);
+//   auto min_size = std::min(A.extent(0), windowsize);
+  auto min_size = std::min(static_cast<size_type>(A.extent(0)), windowsize);
   if (rank > min_size) {
     std::cout
         << "Error: desired rank must be less than or equal to size of A and "

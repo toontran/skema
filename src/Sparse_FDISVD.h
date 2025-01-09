@@ -29,11 +29,17 @@ class SparseFDISVD {
   using range_type = typename std::pair<size_type, size_type>;
 
  public:
-  SparseFDISVD(const size_t,      /* nrow */
-               const size_t,      /* ncol */
-               const size_t,      /* nnz */
-               const size_t,      /* rank */
-               const size_t,      /* wsize */
+//   SparseFDISVD(const size_t,      /* nrow */
+//                const size_t,      /* ncol */
+//                const size_t,      /* nnz */
+//                const size_t,      /* rank */
+//                const size_t,      /* wsize */
+//                const AlgParams&); /* algParams */
+  SparseFDISVD(const size_type,   /* nrow */
+               const size_type,      /* ncol */
+               const size_type,      /* nnz */
+               const size_type,      /* rank */
+               const size_type,      /* wsize */
                const AlgParams&); /* algParams */
 
   ~SparseFDISVD() = default;
@@ -188,5 +194,9 @@ void fdisvd_sparse(const crs_matrix_type&,
                    const size_t,
                    const size_t,
                    const AlgParams&);
+// void fdisvd_sparse(const crs_matrix_type&,
+//                    const size_type,
+//                    const size_type,
+//                    const AlgParams&);
 
 #endif /* FREQUENT_DIRECTIONS_INCREMENTAL_SVD_SPARSE_H */

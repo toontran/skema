@@ -367,9 +367,11 @@ int dense_driver(std::string& inputfilename, AlgParams& algParams) {
         solver == "block-isvd-orig") {
       /* FrequentDirections */
       fdisvd_dense(A, rank, window, algParams);
+//       DenseFDISVD(A, rank, window, algParams);
     } else if (solver == "sketchy") {
       /* Sketchy SVD */
       sketchy_svd_dense(A, rank, range, core, window, algParams);
+//       DenseSketchySVD(A, rank, range, core, window, algParams);
     } else {
       std::cout << "No other solvers supported." << std::endl;
     }
@@ -379,19 +381,22 @@ int dense_driver(std::string& inputfilename, AlgParams& algParams) {
     if (solver == "fd" || solver == "isvd") {
       /* FrequentDirections */
       kernel_fdisvd(A, rank, window, algParams);
+//       KernelFDISVD(A, rank, window, algParams);
     } else if (solver == "sketchy") {
       if (algParams.isspd) {
         /* Sketchy EIG */
         kernel_sketchy_eig(A, rank, range, window, algParams);
+//         KernelSketchyEIG(A, rank, range, window, algParams);
       } else {
         /* Sketchy SVD */
         kernel_sketchy_svd(A, rank, range, core, window, algParams);
+//         KernelSketchySVD(A, rank, range, core, window, algParams);
       }
 
     } else if (solver == "primme") {
       kernel_eigs(A, rank, window, algParams);
     } else {
-      std::cout << "No other solvers supported." << std::endl;
+      std::cout << "No other solvers supported. Chosen " << solver << std::endl;
     }
   } else {
     std::cout << "No other kernels supported." << std::endl;
@@ -444,6 +449,7 @@ int sparse_driver(std::string& inputfilename, AlgParams& algParams) {
     if (algParams.isspd) {
       /* Sketchy SPD */
       sketchy_spd_sparse(A, rank, range, window, algParams);
+//       sketchy_spd_sparse(A, rank, range, window, algParams);
     } else {
       /* Sketchy SVD */
       sketchy_svd_sparse(A, rank, range, core, window, algParams);

@@ -26,12 +26,19 @@ class DenseSketchySVD {
 
  public:
   DenseSketchySVD() = default;
-  DenseSketchySVD(const size_t,      /* nrow */
-                  const size_t,      /* ncol */
-                  const size_t,      /* rank */
-                  const size_t,      /* range */
-                  const size_t,      /* core */
-                  const size_t,      /* window */
+//   DenseSketchySVD(const size_t,      /* nrow */
+//                   const size_t,      /* ncol */
+//                   const size_t,      /* rank */
+//                   const size_t,      /* range */
+//                   const size_t,      /* core */
+//                   const size_t,      /* window */
+//                   const AlgParams&); /* algParams */
+  DenseSketchySVD(const size_type,      /* nrow */
+                  const size_type,      /* ncol */
+                  const size_type,      /* rank */
+                  const size_type,      /* range */
+                  const size_type,      /* core */
+                  const size_type,      /* window */
                   const AlgParams&); /* algParams */
 
   DenseSketchySVD(const DenseSketchySVD&) = default;
@@ -111,5 +118,11 @@ void sketchy_svd_dense(const matrix_type&,
                        const size_t,
                        const size_t,
                        const AlgParams&);
+// void sketchy_svd_dense(const matrix_type&,
+//                        const size_type,
+//                        const size_type,
+//                        const size_type,
+//                        const size_type,
+//                        const AlgParams&);
 
 #endif /* DENSE_SKETCHY_SVD_H */

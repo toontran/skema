@@ -301,8 +301,11 @@ void DenseFDISVD<SamplerType>::block_fd_impl(const matrix_type& A,
     matrix_type A_iter(A, idx, Kokkos::ALL());
 
     Kokkos::resize(vvecs, _rank + _wsize, _ncol);
+//     matrix_type lower_matrix(
+//         vvecs, Kokkos::make_pair<size_type>(_rank, _rank + _wsize),
+//         Kokkos::ALL());
     matrix_type lower_matrix(
-        vvecs, Kokkos::make_pair<size_type>(_rank, _rank + _wsize),
+        vvecs, range_type(_rank, _rank + _wsize),
         Kokkos::ALL());
     Kokkos::deep_copy(lower_matrix, A_iter);
 
@@ -409,7 +412,8 @@ void DenseFDISVD<SamplerType>::row_isvd_impl(const matrix_type& A,
     auto a_row = Kokkos::subview(A, irow, Kokkos::ALL());
 
     // P = u(0:_row_idx, :)
-    matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+//     matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+    matrix_type P(U, range_type(0, irow), Kokkos::ALL());
 
     // // temporary views
     vector_type p("p", Vt.extent(0));
@@ -443,14 +447,18 @@ void DenseFDISVD<SamplerType>::row_isvd_impl(const matrix_type& A,
     matrix_type lvt("vv", Sh.extent(1), Sh.extent(0));
     svd_impl(Sh, lu, ls, lvt);
 
-    matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, _rank));
-    matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, _rank), Kokkos::ALL());
+//     matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, _rank));
+//     matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, _rank), Kokkos::ALL());
+    matrix_type Pu(lu, Kokkos::ALL(), range_type(0, _rank));
+    matrix_type Qvt(lvt, range_type(0, _rank), Kokkos::ALL());
 
     // Ptilde = [P, 0; 0, 1] * lu
     matrix_type Ptilde("Ptilde", P.extent(0) + 1, _rank);
     matrix_type Pbig("Pbig", P.extent(0) + 1, P.extent(1) + 1);
-    matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
-                   Kokkos::make_pair<size_type>(0, P.extent(1)));
+//     matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
+//                    Kokkos::make_pair<size_type>(0, P.extent(1)));
+    matrix_type P0(Pbig, range_type(0, P.extent(0)),
+               range_type(0, P.extent(1)));
     Kokkos::deep_copy(P0, P);
     Pbig(P.extent(0), P.extent(1)) = 1.0;
     KokkosBlas::gemm("N", "N", 1.0, Pbig, Pu, 0.0, Ptilde);
@@ -459,8 +467,10 @@ void DenseFDISVD<SamplerType>::row_isvd_impl(const matrix_type& A,
     matrix_type V = _transpose(Vt);
     matrix_type Qtilde("Qtilde", V.extent(0), _rank);
     matrix_type Qtmp("Qtmp", V.extent(0), V.extent(1) + 1);
+//     matrix_type Q0(Qtmp, Kokkos::ALL(),
+//                    Kokkos::make_pair<size_type>(0, V.extent(1)));
     matrix_type Q0(Qtmp, Kokkos::ALL(),
-                   Kokkos::make_pair<size_type>(0, V.extent(1)));
+                   range_type(0, V.extent(1)));
     Kokkos::deep_copy(Q0, V);
     assert(Qtmp.extent(0) == q.extent(0));
     for (auto ii = 0; ii < q.extent(0); ++ii) {
@@ -532,7 +542,8 @@ void DenseFDISVD<SamplerType>::block_isvd_impl(const matrix_type& A,
     matrix_type A_iter(A, idx, Kokkos::ALL());
 
     // P = u(0:_row_idx, :)
-    matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+//     matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+    matrix_type P(U, range_type(0, irow), Kokkos::ALL());
 
     // work views
     matrix_type p("p", Vt.extent(0), A_iter.extent(0));
@@ -561,12 +572,18 @@ void DenseFDISVD<SamplerType>::block_isvd_impl(const matrix_type& A,
     for (size_t ii = 0; ii < _rank; ++ii) {
       Sh(ii, ii) = S(ii);
     }
+//     matrix_type Sh_Pt(Sh,
+//                       Kokkos::make_pair<size_type>(_rank, _rank + p.extent(1)),
+//                       Kokkos::make_pair<size_type>(0, p.extent(0)));
+//     matrix_type Sh_Kt(Sh,
+//                       Kokkos::make_pair<size_type>(_rank, _rank + k.extent(1)),
+//                       Kokkos::make_pair<size_type>(_rank, _rank + k.extent(0)));
     matrix_type Sh_Pt(Sh,
-                      Kokkos::make_pair<size_type>(_rank, _rank + p.extent(1)),
-                      Kokkos::make_pair<size_type>(0, p.extent(0)));
+                      range_type(_rank, _rank + p.extent(1)),
+                      range_type(0, p.extent(0)));
     matrix_type Sh_Kt(Sh,
-                      Kokkos::make_pair<size_type>(_rank, _rank + k.extent(1)),
-                      Kokkos::make_pair<size_type>(_rank, _rank + k.extent(0)));
+                      range_type(_rank, _rank + k.extent(1)),
+                      range_type(_rank, _rank + k.extent(0)));
     Kokkos::deep_copy(Sh_Pt, _transpose(p));
     Kokkos::deep_copy(Sh_Kt, _transpose(k));
 
@@ -576,14 +593,18 @@ void DenseFDISVD<SamplerType>::block_isvd_impl(const matrix_type& A,
     matrix_type lvt("vv", Sh.extent(1), Sh.extent(0));
     svd_impl(Sh, lu, ls, lvt);
 
-    matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, _rank));
-    matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, _rank), Kokkos::ALL());
+//     matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, _rank));
+//     matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, _rank), Kokkos::ALL());
+    matrix_type Pu(lu, Kokkos::ALL(), range_type(0, _rank));
+    matrix_type Qvt(lvt, range_type(0, _rank), Kokkos::ALL());
 
     // Ptilde = [P, 0; 0, ones(size(k))] * lu
     matrix_type Ptilde("Ptilde", P.extent(0) + _wsize, _rank);
     matrix_type Pbig("Pbig", P.extent(0) + _wsize, P.extent(1) + _wsize);
-    matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
-                   Kokkos::make_pair<size_type>(0, P.extent(1)));
+//     matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
+//                    Kokkos::make_pair<size_type>(0, P.extent(1)));
+    matrix_type P0(Pbig, range_type(0, P.extent(0)),
+                   range_type(0, P.extent(1)));
     Kokkos::deep_copy(P0, P);
     ordinal_type row_offset = P.extent(0);
     ordinal_type col_offset = P.extent(1);
@@ -596,11 +617,16 @@ void DenseFDISVD<SamplerType>::block_isvd_impl(const matrix_type& A,
     matrix_type V = _transpose(Vt);
     matrix_type Qtilde("Qtilde", V.extent(0), _rank);
     matrix_type Qbig("Qtmp", V.extent(0), V.extent(1) + q.extent(1));
+//     matrix_type Q0(Qbig, Kokkos::ALL(),
+//                    Kokkos::make_pair<size_type>(0, V.extent(1)));
     matrix_type Q0(Qbig, Kokkos::ALL(),
-                   Kokkos::make_pair<size_type>(0, V.extent(1)));
+                   range_type(0, V.extent(1)));
+//     matrix_type Q1(
+//         Qbig, Kokkos::ALL(),
+//         Kokkos::make_p.air<size_type>(V.extent(1), V.extent(1) + q.extent(1)));
     matrix_type Q1(
         Qbig, Kokkos::ALL(),
-        Kokkos::make_pair<size_type>(V.extent(1), V.extent(1) + q.extent(1)));
+        range_type(V.extent(1), V.extent(1) + q.extent(1)));
     Kokkos::deep_copy(Q0, V);
     Kokkos::deep_copy(Q1, q);
     KokkosBlas::gemm("N", "T", 1.0, Qbig, Qvt, 0.0, Qtilde);
@@ -836,7 +862,10 @@ void fdisvd_dense(const matrix_type& A,
                   const size_type rank,
                   const size_type windowsize,
                   const AlgParams& algParams) {
-  size_type min_size = std::min(std::min(A.extent(0), A.extent(1)), windowsize);
+//   size_type min_size = std::min(std::min(A.extent(0), A.extent(1)), windowsize);
+  size_type min_size = std::min(std::min(static_cast<size_type>(A.extent(0)), 
+                                      static_cast<size_type>(A.extent(1))), 
+                             windowsize);
   if (rank > min_size) {
     std::cout
         << "Error: desired rank must be less than or equal to size of A and "

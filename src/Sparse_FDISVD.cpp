@@ -509,7 +509,8 @@ void SparseFDISVD<SamplerType>::row_isvd_impl(const crs_matrix_type& A,
     auto a_row = A.rowConst(irow);
 
     // P = u(0:_row_idx, :)
-    matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+//     matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+    matrix_type P(U, range_type(0, irow), Kokkos::ALL());
 
     // // temporary views
     vector_type p("p", Vt.extent(0));
@@ -551,14 +552,18 @@ void SparseFDISVD<SamplerType>::row_isvd_impl(const crs_matrix_type& A,
     matrix_type lvt("vv", Sh.extent(1), Sh.extent(0));
     svds_(Sh, lu, ls, lvt);
 
-    matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, rank_));
-    matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, rank_), Kokkos::ALL());
+//     matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, rank_));
+//     matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, rank_), Kokkos::ALL());
+    matrix_type Pu(lu, Kokkos::ALL(), range_type(0, rank_));
+    matrix_type Qvt(lvt, range_type(0, rank_), Kokkos::ALL());
 
     // Ptilde = [P, 0; 0, 1] * lu
     matrix_type Ptilde("Ptilde", P.extent(0) + 1, rank_);
     matrix_type Pbig("Pbig", P.extent(0) + 1, P.extent(1) + 1);
-    matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
-                   Kokkos::make_pair<size_type>(0, P.extent(1)));
+//     matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
+//                    Kokkos::make_pair<size_type>(0, P.extent(1)));
+    matrix_type P0(Pbig, range_type(0, P.extent(0)),
+                   range_type(0, P.extent(1)));
     Kokkos::deep_copy(P0, P);
     Pbig(P.extent(0), P.extent(1)) = 1.0;
     KokkosBlas::gemm("N", "N", 1.0, Pbig, Pu, 0.0, Ptilde);
@@ -567,8 +572,10 @@ void SparseFDISVD<SamplerType>::row_isvd_impl(const crs_matrix_type& A,
     matrix_type V = _transpose(Vt);
     matrix_type Qtilde("Qtilde", V.extent(0), rank_);
     matrix_type Qtmp("Qtmp", V.extent(0), V.extent(1) + 1);
+//     matrix_type Q0(Qtmp, Kokkos::ALL(),
+//                    Kokkos::make_pair<size_type>(0, V.extent(1)));
     matrix_type Q0(Qtmp, Kokkos::ALL(),
-                   Kokkos::make_pair<size_type>(0, V.extent(1)));
+                   range_type(0, V.extent(1)));
     Kokkos::deep_copy(Q0, V);
     assert(Qtmp.extent(0) == q.extent(0));
     for (auto ii = 0; ii < q.extent(0); ++ii) {
@@ -693,7 +700,8 @@ void SparseFDISVD<SamplerType>::block_isvd_impl(const crs_matrix_type& A,
                            A_iter_entries);
 
     // P = u(0:_row_idx, :)
-    matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+//     matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+    matrix_type P(U, range_type(0, irow), Kokkos::ALL());
 
     // work views
     matrix_type e("e", A_iter.numCols(), A_iter.numRows());
@@ -724,12 +732,18 @@ void SparseFDISVD<SamplerType>::block_isvd_impl(const crs_matrix_type& A,
     for (size_t ii = 0; ii < rank_; ++ii) {
       Sh(ii, ii) = S(ii);
     }
+//     matrix_type Sh_Pt(Sh,
+//                       Kokkos::make_pair<size_type>(rank_, rank_ + pt.extent(0)),
+//                       Kokkos::make_pair<size_type>(0, pt.extent(1)));
+//     matrix_type Sh_Kt(Sh,
+//                       Kokkos::make_pair<size_type>(rank_, rank_ + k.extent(1)),
+//                       Kokkos::make_pair<size_type>(rank_, rank_ + k.extent(0)));
     matrix_type Sh_Pt(Sh,
-                      Kokkos::make_pair<size_type>(rank_, rank_ + pt.extent(0)),
-                      Kokkos::make_pair<size_type>(0, pt.extent(1)));
+                      range_type(rank_, rank_ + pt.extent(0)),
+                      range_type(0, pt.extent(1)));
     matrix_type Sh_Kt(Sh,
-                      Kokkos::make_pair<size_type>(rank_, rank_ + k.extent(1)),
-                      Kokkos::make_pair<size_type>(rank_, rank_ + k.extent(0)));
+                      range_type(rank_, rank_ + k.extent(1)),
+                      range_type(rank_, rank_ + k.extent(0)));
     Kokkos::deep_copy(Sh_Pt, pt);
     Kokkos::deep_copy(Sh_Kt, _transpose(k));
 
@@ -739,14 +753,18 @@ void SparseFDISVD<SamplerType>::block_isvd_impl(const crs_matrix_type& A,
     matrix_type lvt("vv", Sh.extent(1), Sh.extent(0));
     svds_(Sh, lu, ls, lvt);
 
-    matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, rank_));
-    matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, rank_), Kokkos::ALL());
+//     matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, rank_));
+//     matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, rank_), Kokkos::ALL());
+    matrix_type Pu(lu, Kokkos::ALL(), range_type(0, rank_));
+    matrix_type Qvt(lvt, range_type(0, rank_), Kokkos::ALL());
 
     // Ptilde = [P, 0; 0, ones(size(k))] * lu
     matrix_type Ptilde("Ptilde", P.extent(0) + wsize_, rank_);
     matrix_type Pbig("Pbig", P.extent(0) + wsize_, P.extent(1) + wsize_);
-    matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
-                   Kokkos::make_pair<size_type>(0, P.extent(1)));
+//     matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
+//                    Kokkos::make_pair<size_type>(0, P.extent(1)));
+    matrix_type P0(Pbig, range_type(0, P.extent(0)),
+                   range_type(0, P.extent(1)));
     Kokkos::deep_copy(P0, P);
     ordinal_type row_offset = P.extent(0);
     ordinal_type col_offset = P.extent(1);
@@ -758,11 +776,16 @@ void SparseFDISVD<SamplerType>::block_isvd_impl(const crs_matrix_type& A,
     // Qtilde = [Q q] * lvt^T;
     matrix_type Qtilde("Qtilde", V.extent(0), rank_);
     matrix_type Qbig("Qtmp", V.extent(0), V.extent(1) + q.extent(1));
+//     matrix_type Q0(Qbig, Kokkos::ALL(),
+//                    Kokkos::make_pair<size_type>(0, V.extent(1)));
+//     matrix_type Q1(
+//         Qbig, Kokkos::ALL(),
+//         Kokkos::make_pair<size_type>(V.extent(1), V.extent(1) + q.extent(1)));
     matrix_type Q0(Qbig, Kokkos::ALL(),
-                   Kokkos::make_pair<size_type>(0, V.extent(1)));
+                   range_type(0, V.extent(1)));
     matrix_type Q1(
         Qbig, Kokkos::ALL(),
-        Kokkos::make_pair<size_type>(V.extent(1), V.extent(1) + q.extent(1)));
+        range_type(V.extent(1), V.extent(1) + q.extent(1)));
     Kokkos::deep_copy(Q0, V);
     Kokkos::deep_copy(Q1, q);
     KokkosBlas::gemm("N", "T", 1.0, Qbig, Qvt, 0.0, Qtilde);
@@ -887,7 +910,8 @@ void SparseFDISVD<SamplerType>::block_isvd_opt_impl(const crs_matrix_type& A,
                            A_iter_entries);
 
     // P = u(0:_row_idx, :)
-    matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+//     matrix_type P(U, Kokkos::make_pair<size_type>(0, irow), Kokkos::ALL());
+    matrix_type P(U, range_type(0, irow), Kokkos::ALL());
 
     // work views
     matrix_type e("e", A_iter.numCols(), A_iter.numRows());
@@ -926,15 +950,19 @@ void SparseFDISVD<SamplerType>::block_isvd_opt_impl(const crs_matrix_type& A,
     std::cout << "SVD" << std::endl;
     svds_(Sh, lu, ls, lvt);
 
-    matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, rank_));
-    matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, rank_), Kokkos::ALL());
+//     matrix_type Pu(lu, Kokkos::ALL(), Kokkos::make_pair<size_type>(0, rank_));
+//     matrix_type Qvt(lvt, Kokkos::make_pair<size_type>(0, rank_), Kokkos::ALL());
+    matrix_type Pu(lu, Kokkos::ALL(), range_type(0, rank_));
+    matrix_type Qvt(lvt, range_type(0, rank_), Kokkos::ALL());
 
     // Ptilde = [P, 0; 0, ones(size(k))] * lu
     std::cout << "Constructing Ptilde" << std::endl;
     matrix_type Ptilde("Ptilde", P.extent(0) + wsize_, rank_);
     matrix_type Pbig("Pbig", P.extent(0) + wsize_, P.extent(1) + wsize_);
-    matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
-                   Kokkos::make_pair<size_type>(0, P.extent(1)));
+//     matrix_type P0(Pbig, Kokkos::make_pair<size_type>(0, P.extent(0)),
+//                    Kokkos::make_pair<size_type>(0, P.extent(1)));
+    matrix_type P0(Pbig, range_type(0, P.extent(0)),
+                   range_type(0, P.extent(1)));
     Kokkos::deep_copy(P0, P);
     ordinal_type row_offset = P.extent(0);
     ordinal_type col_offset = P.extent(1);
@@ -947,11 +975,16 @@ void SparseFDISVD<SamplerType>::block_isvd_opt_impl(const crs_matrix_type& A,
     std::cout << "Constructing Qtilde" << std::endl;
     matrix_type Qtilde("Qtilde", V.extent(0), rank_);
     matrix_type Qbig("Qtmp", V.extent(0), V.extent(1) + q.extent(1));
+//     matrix_type Q0(Qbig, Kokkos::ALL(),
+//                    Kokkos::make_pair<size_type>(0, V.extent(1)));
+//     matrix_type Q1(
+//         Qbig, Kokkos::ALL(),
+//         Kokkos::make_pair<size_type>(V.extent(1), V.extent(1) + q.extent(1)));
     matrix_type Q0(Qbig, Kokkos::ALL(),
-                   Kokkos::make_pair<size_type>(0, V.extent(1)));
+                   range_type(0, V.extent(1)));
     matrix_type Q1(
         Qbig, Kokkos::ALL(),
-        Kokkos::make_pair<size_type>(V.extent(1), V.extent(1) + q.extent(1)));
+        range_type(V.extent(1), V.extent(1) + q.extent(1)));
     Kokkos::deep_copy(Q0, V);
     Kokkos::deep_copy(Q1, q);
     KokkosBlas::gemm("N", "T", 1.0, Qbig, Qvt, 0.0, Qtilde);

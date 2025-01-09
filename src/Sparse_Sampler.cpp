@@ -180,9 +180,13 @@ void SparseReservoirSampler::_update(const crs_matrix_type& A) {
   Kokkos::sort(add_to_new_rowids);
 
   // Pop the kept indices from the list
+//   auto only_new_rowids = Kokkos::subview(
+//       add_to_new_rowids,
+//       Kokkos::make_pair<size_type>(keep_from_prev_rowids.count(),
+//                                    add_to_new_rowids.extent(0)));
   auto only_new_rowids = Kokkos::subview(
       add_to_new_rowids,
-      Kokkos::make_pair<size_type>(keep_from_prev_rowids.count(),
+      range_type(keep_from_prev_rowids.count(),
                                    add_to_new_rowids.extent(0)));
 
   if (debug_level_ > 0) {

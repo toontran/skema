@@ -275,16 +275,21 @@ void SparseThreeSketch<DimReduxType>::stream_sparse_map(
     vector_type Y_values("yvalues", Y_.nnz() + y.nnz());
 
     // Copy the old row map
+//     auto yprev_rowmap = Kokkos::subview(
+//         Y_rowmap, Kokkos::make_pair<size_type>(0, Y_.graph.row_map.extent(0)));
     auto yprev_rowmap = Kokkos::subview(
-        Y_rowmap, Kokkos::make_pair<size_type>(0, Y_.graph.row_map.extent(0)));
+        Y_rowmap, range_type(0, Y_.graph.row_map.extent(0)));
     Kokkos::deep_copy(yprev_rowmap, Y_.graph.row_map);
     Kokkos::fence();
 
     // Add the new row pointers
     size_type begin{Y_.graph.row_map.extent(0)};
+//     auto y_rowmap = Kokkos::subview(
+//         y.graph.row_map,
+//         Kokkos::make_pair<size_type>(1, y.graph.row_map.extent(0)));
     auto y_rowmap = Kokkos::subview(
         y.graph.row_map,
-        Kokkos::make_pair<size_type>(1, y.graph.row_map.extent(0)));
+        range_type(1, y.graph.row_map.extent(0)));
 
     auto Y_new_rowmap = Kokkos::subview(
         Y_rowmap, Kokkos::make_pair(begin, begin + y.numRows()));
@@ -310,10 +315,14 @@ void SparseThreeSketch<DimReduxType>::stream_sparse_map(
     Kokkos::fence();
 
     // Copy the old data
+//     auto yprev_entries =
+//         Kokkos::subview(Y_entries, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+//     auto yprev_values =
+//         Kokkos::subview(Y_values, Kokkos::make_pair<size_type>(0, Y_.nnz()));
     auto yprev_entries =
-        Kokkos::subview(Y_entries, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+        Kokkos::subview(Y_entries, range_type(0, Y_.nnz()));
     auto yprev_values =
-        Kokkos::subview(Y_values, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+        Kokkos::subview(Y_values, range_type(0, Y_.nnz()));
     Kokkos::deep_copy(yprev_entries, Y_.graph.entries);
     Kokkos::deep_copy(yprev_values, Y_.values);
     Kokkos::fence();
@@ -467,9 +476,11 @@ void SparseThreeSketch<DimReduxType>::stream_dense_map(const crs_matrix_type& A,
     timer.reset();
 
     if (irow + wsize_ < nrow) {
-      idx = std::make_pair<size_type>(irow, irow + wsize_);
+//       idx = std::make_pair<size_type>(irow, irow + wsize_);
+      idx = std::make_pair(irow, irow + wsize_);
     } else {
-      idx = std::make_pair<size_type>(irow, nrow);
+//       idx = std::make_pair<size_type>(irow, nrow);
+      idx = std::make_pair(irow, nrow);
       wsize_ = idx.second - idx.first;
     }
 
@@ -1279,16 +1290,21 @@ void SparseSketchySPD<DimReduxType>::stream_sparse_map(const crs_matrix_type& A,
     vector_type Y_values("yvalues", Y_.nnz() + y.nnz());
 
     // Copy the old row map
+//     auto yprev_rowmap = Kokkos::subview(
+//         Y_rowmap, Kokkos::make_pair<size_type>(0, Y_.graph.row_map.extent(0)));
     auto yprev_rowmap = Kokkos::subview(
-        Y_rowmap, Kokkos::make_pair<size_type>(0, Y_.graph.row_map.extent(0)));
+        Y_rowmap, range_type(0, Y_.graph.row_map.extent(0)));
     Kokkos::deep_copy(yprev_rowmap, Y_.graph.row_map);
     Kokkos::fence();
 
     // Add the new row pointers
     size_type begin{Y_.graph.row_map.extent(0)};
+//     auto y_rowmap = Kokkos::subview(
+//         y.graph.row_map,
+//         Kokkos::make_pair<size_type>(1, y.graph.row_map.extent(0)));
     auto y_rowmap = Kokkos::subview(
         y.graph.row_map,
-        Kokkos::make_pair<size_type>(1, y.graph.row_map.extent(0)));
+        range_type(1, y.graph.row_map.extent(0)));
 
     auto Y_new_rowmap = Kokkos::subview(
         Y_rowmap, Kokkos::make_pair(begin, begin + y.numRows()));
@@ -1314,10 +1330,14 @@ void SparseSketchySPD<DimReduxType>::stream_sparse_map(const crs_matrix_type& A,
     Kokkos::fence();
 
     // Copy the old data
+//     auto yprev_entries =
+//         Kokkos::subview(Y_entries, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+//     auto yprev_values =
+//         Kokkos::subview(Y_values, Kokkos::make_pair<size_type>(0, Y_.nnz()));
     auto yprev_entries =
-        Kokkos::subview(Y_entries, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+        Kokkos::subview(Y_entries, range_type(0, Y_.nnz()));
     auto yprev_values =
-        Kokkos::subview(Y_values, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+        Kokkos::subview(Y_values, range_type(0, Y_.nnz()));
     Kokkos::deep_copy(yprev_entries, Y_.graph.entries);
     Kokkos::deep_copy(yprev_values, Y_.values);
     Kokkos::fence();
@@ -1465,16 +1485,21 @@ void SparseSketchySPD<DimReduxType>::stream_sparse_map(const crs_matrix_type& A,
     vector_type Y_values("yvalues", Y_.nnz() + y.nnz());
 
     // Copy the old row map
+//     auto yprev_rowmap = Kokkos::subview(
+//         Y_rowmap, Kokkos::make_pair<size_type>(0, Y_.graph.row_map.extent(0)));
     auto yprev_rowmap = Kokkos::subview(
-        Y_rowmap, Kokkos::make_pair<size_type>(0, Y_.graph.row_map.extent(0)));
+        Y_rowmap, range_type(0, Y_.graph.row_map.extent(0)));
     Kokkos::deep_copy(yprev_rowmap, Y_.graph.row_map);
     Kokkos::fence();
 
     // Add the new row pointers
     size_type begin{Y_.graph.row_map.extent(0)};
+//     auto y_rowmap = Kokkos::subview(
+//         y.graph.row_map,
+//         Kokkos::make_pair<size_type>(1, y.graph.row_map.extent(0)));
     auto y_rowmap = Kokkos::subview(
         y.graph.row_map,
-        Kokkos::make_pair<size_type>(1, y.graph.row_map.extent(0)));
+        range_type(1, y.graph.row_map.extent(0)));
 
     auto Y_new_rowmap = Kokkos::subview(
         Y_rowmap, Kokkos::make_pair(begin, begin + y.numRows()));
@@ -1500,10 +1525,14 @@ void SparseSketchySPD<DimReduxType>::stream_sparse_map(const crs_matrix_type& A,
     Kokkos::fence();
 
     // Copy the old data
+//     auto yprev_entries =
+//         Kokkos::subview(Y_entries, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+//     auto yprev_values =
+//         Kokkos::subview(Y_values, Kokkos::make_pair<size_type>(0, Y_.nnz()));
     auto yprev_entries =
-        Kokkos::subview(Y_entries, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+        Kokkos::subview(Y_entries, range_type(0, Y_.nnz()));
     auto yprev_values =
-        Kokkos::subview(Y_values, Kokkos::make_pair<size_type>(0, Y_.nnz()));
+        Kokkos::subview(Y_values, range_type(0, Y_.nnz()));
     Kokkos::deep_copy(yprev_entries, Y_.graph.entries);
     Kokkos::deep_copy(yprev_values, Y_.values);
     Kokkos::fence();

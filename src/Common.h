@@ -63,11 +63,11 @@ inline void print1Dview(const index_type& A) {
   std::cout << std::endl;
 }
 
-inline void print1Dview(const Kokkos::View<size_type*, layout_type>& A) {
-  for (auto row = 0; row < A.extent(0); ++row)
-    std::cout << " " << A(row);
-  std::cout << std::endl;
-}
+// inline void print1Dview(const Kokkos::View<size_type*, layout_type>& A) {
+//   for (auto row = 0; row < A.extent(0); ++row)
+//     std::cout << " " << A(row);
+//   std::cout << std::endl;
+// }
 
 inline void print2Dview(crs_matrix_type& A) {
   auto B = KokkosSparse::crs2coo(A);
@@ -186,7 +186,8 @@ inline void compute_resnorms(const matrix_type& A,
   const scalar_type sqrt2{std::sqrt(2.0)};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type rnorms("rnorms", nrow + ncol, rank);
   auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
@@ -248,10 +249,15 @@ inline void compute_resnorms(const matrix_type& A,
   const scalar_type sqrt2{std::sqrt(2.0)};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type rnorms("rnorms", nrow + ncol, rank);
-  auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//   auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//                                  Kokkos::ALL());
+//   auto vrnorms = Kokkos::subview(rnorms, Kokkos::make_pair(nrow, nrow + ncol),
+//                                  Kokkos::ALL());
+  auto urnorms = Kokkos::subview(rnorms, range_type(0, nrow),
                                  Kokkos::ALL());
   auto vrnorms = Kokkos::subview(rnorms, Kokkos::make_pair(nrow, nrow + ncol),
                                  Kokkos::ALL());
@@ -327,13 +333,16 @@ inline void compute_kernel_resnorms(kernel_type& kernel,
   const scalar_type sqrt2{std::sqrt(2.0)};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type Ur(U, Kokkos::ALL(), rlargest);
   matrix_type Vr(V, Kokkos::ALL(), rlargest);
 
   matrix_type rnorms("rnorms", nrow + ncol, rank);
-  auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//   auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//                                  Kokkos::ALL());
+  auto urnorms = Kokkos::subview(rnorms, range_type(0, nrow),
                                  Kokkos::ALL());
   auto vrnorms = Kokkos::subview(rnorms, Kokkos::make_pair(nrow, nrow + ncol),
                                  Kokkos::ALL());
@@ -423,7 +432,8 @@ inline void compute_kernel_resnorms(kernel_type& kernel,
   const scalar_type sqrt2{std::sqrt(2.0)};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type Vr(V, Kokkos::ALL(), rlargest);
 
@@ -497,10 +507,13 @@ inline void compute_resnorms(const crs_matrix_type& A,
   const scalar_type sqrt2{std::sqrt(2.0)};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type rnorms("rnorms", nrow + ncol, rank);
-  auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//   auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//                                  Kokkos::ALL());
+  auto urnorms = Kokkos::subview(rnorms, range_type(0, nrow),
                                  Kokkos::ALL());
   auto vrnorms = Kokkos::subview(rnorms, Kokkos::make_pair(nrow, nrow + ncol),
                                  Kokkos::ALL());
@@ -567,10 +580,13 @@ inline void compute_resnorms(const crs_matrix_type& A,
   const scalar_type sqrt2{std::sqrt(2.0)};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type rnorms("rnorms", nrow + ncol, rank);
-  auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//   auto urnorms = Kokkos::subview(rnorms, Kokkos::make_pair<size_type>(0, nrow),
+//                                  Kokkos::ALL());
+  auto urnorms = Kokkos::subview(rnorms, range_type(0, nrow),
                                  Kokkos::ALL());
   auto vrnorms = Kokkos::subview(rnorms, Kokkos::make_pair(nrow, nrow + ncol),
                                  Kokkos::ALL());
@@ -636,7 +652,8 @@ inline vector_type compute_spd_resnorms(const crs_matrix_type& A,
   const size_type ncol{static_cast<size_type>(A.numCols())};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
   vector_type rnorms("rnorms", rank);
   matrix_type rtmp("rtmp", nrow, rank);
 
@@ -687,7 +704,8 @@ inline void estimate_resnorms(const matrix_type& sample_matrix,
   const size_type ncols{sample_matrix.extent(1)};
   const scalar_type sqrts{std::sqrt(nsamp)};
 
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type Vr(V, Kokkos::ALL(), rlargest);
   matrix_type Av("Av", nsamp, rank);
@@ -730,7 +748,8 @@ inline void estimate_resnorms(const crs_matrix_type& sample_matrix,
   const char notransp{'N'};
 
   range_type row_range;
-  range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+//   range_type rlargest = std::make_pair<size_type, size_type>(0, rank);
+  range_type rlargest(0, rank);
 
   matrix_type Av("Av", nsamp, rank);
 

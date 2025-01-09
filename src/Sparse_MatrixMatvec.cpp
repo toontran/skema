@@ -51,10 +51,12 @@ void default_eigs_sparse_matvec(void* x,
     unmanaged_matrix_type y_view0((double*)y, static_cast<size_t>(*ldy),
                                   static_cast<size_t>(*blockSize));
 
-    auto x_view = Kokkos::subview(x_view0, Kokkos::make_pair<size_type>(0, n),
-                                  Kokkos::ALL());
-    auto y_view = Kokkos::subview(y_view0, Kokkos::make_pair<size_type>(0, n),
-                                  Kokkos::ALL());
+//     auto x_view = Kokkos::subview(x_view0, Kokkos::make_pair<size_type>(0, n),
+//                                   Kokkos::ALL());
+//     auto y_view = Kokkos::subview(y_view0, Kokkos::make_pair<size_type>(0, n),
+//                                   Kokkos::ALL
+    auto x_view = Kokkos::subview(x_view0, range_type(0, n), Kokkos::ALL());
+    auto y_view = Kokkos::subview(y_view0, range_type(0, n), Kokkos::ALL());
 
     KokkosSparse::spmv("N", 1.0, spmatrix, x_view, 0.0, y_view);
 

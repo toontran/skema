@@ -25,12 +25,19 @@ class KernelSketchySVD {
   using index_type = typename Kokkos::View<ordinal_type*, Kokkos::LayoutLeft>;
 
  public:
-  KernelSketchySVD(const size_t,      /* nrow */
-                   const size_t,      /* ncol */
-                   const size_t,      /* rank */
-                   const size_t,      /* range */
-                   const size_t,      /* core */
-                   const size_t,      /* window */
+//   KernelSketchySVD(const size_t,      /* nrow */
+//                    const size_t,      /* ncol */
+//                    const size_t,      /* rank */
+//                    const size_t,      /* range */
+//                    const size_t,      /* core */
+//                    const size_t,      /* window */
+//                    const AlgParams&); /* algParams */
+  KernelSketchySVD(const size_type,      /* nrow */
+                   const size_type,      /* ncol */
+                   const size_type,      /* rank */
+                   const size_type,      /* range */
+                   const size_type,      /* core */
+                   const size_type,      /* window */
                    const AlgParams&); /* algParams */
 
   KernelSketchySVD(const KernelSketchySVD&) = default;
