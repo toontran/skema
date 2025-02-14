@@ -88,6 +88,10 @@ auto ISVD<MatrixType>::solve(const MatrixType& A) -> void {
     // Compute decomposition with optional sampler
     solver.compute(A_window, rank + wsize, ncol, rank, uvecs, svals, vtvex,
                    solver_rnrms, sampler);
+    printf("svals = [");
+    for (int i = 0; i < rank; i++) {
+        printf("%.6f%s", svals[i], (i < rank-1 ? ", " : "]\n"));
+    }
 
     if (residual_iters) {
       compute_residuals(A);
