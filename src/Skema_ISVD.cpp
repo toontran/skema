@@ -51,6 +51,11 @@ auto ISVD<MatrixType>::solve(const MatrixType& A) -> void {
   solver.compute(A_window, rank + wsize, ncol, rank, uvecs, svals, vtvex,
                  solver_rnrms);
 
+  printf("svals = [");
+  for (int i = 0; i < rank; i++) {
+      printf("%.6f%s", svals[i], (i < rank-1 ? ", " : "]\n"));
+  }
+
   // Compute residuals for the window if desired
   if (residual_iters) {
     compute_residuals(A);
