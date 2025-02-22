@@ -11,6 +11,6 @@ A = scipy.io.mmread(filepath)
 length = 1000
 target_path =f'./test/data/data_{length}.mtx'
 scipy.io.mmwrite(target_path, A[:length, :])
-# print(f"Matrix saved in", filename)
+print(f"Matrix saved in", target_path)
 # if len(S_exact) < 100:
 #     print(S_exact)
