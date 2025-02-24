@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <signal.h>
 
 #include "Skema_AlgParams.hpp"
 #include "Skema_Common.hpp"
@@ -72,6 +73,7 @@ auto ISVD<MatrixType>::solve(const MatrixType& A) -> void {
 
   ++ucnt;
   /* Main loop */
+  
   for (auto irow = wsize; irow < nrow; irow += wsize) {
     if (irow + wsize < nrow) {
       idx = std::make_pair(irow, irow + wsize);
@@ -88,10 +90,14 @@ auto ISVD<MatrixType>::solve(const MatrixType& A) -> void {
     // Compute decomposition with optional sampler
     solver.compute(A_window, rank + wsize, ncol, rank, uvecs, svals, vtvex,
                    solver_rnrms, sampler);
+
     printf("svals = [");
     for (int i = 0; i < rank; i++) {
         printf("%.6f%s", svals[i], (i < rank-1 ? ", " : "]\n"));
     }
+
+    if (irow >= wsize*2)
+      raise(SIGTRAP);
 
     if (residual_iters) {
       compute_residuals(A);
