@@ -72,6 +72,8 @@ void ISVD_SVDS<MatrixType>::compute(const MatrixType& X,
 
   /* Call primme_svds  */
   int ret;
+  // if (irow >= wsize*2)
+  raise(SIGTRAP);
   ret = dprimme_svds(svals.data(), svecs.data(), rnrms.data(),
                      &(primme_svds::params));
   Kokkos::fence();

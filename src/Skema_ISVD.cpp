@@ -96,9 +96,6 @@ auto ISVD<MatrixType>::solve(const MatrixType& A) -> void {
         printf("%.6f%s", svals[i], (i < rank-1 ? ", " : "]\n"));
     }
 
-    if (irow >= wsize*2)
-      raise(SIGTRAP);
-
     if (residual_iters) {
       compute_residuals(A);
     }
