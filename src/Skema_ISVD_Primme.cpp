@@ -29,7 +29,7 @@ void ISVD_SVDS<MatrixType>::compute(const MatrixType& X,
   vector_type svecs("svecs", (nrow + ncol) * rank);
   vector_type rnrms("rnrms", rank);
 
-  printf("nrow: %zu, ncol: %zu, rank: %zu\n", nrow, ncol, rank);
+  // printf("nrow: %zu, ncol: %zu, rank: %zu\n", nrow, ncol, rank);
 
   /* Set primme_svds parameters */
   using primme_svds = PRIMME_SVDS<MatrixType>;
