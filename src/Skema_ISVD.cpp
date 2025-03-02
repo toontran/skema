@@ -6,7 +6,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <signal.h>
 
 #include "Skema_AlgParams.hpp"
 #include "Skema_Common.hpp"

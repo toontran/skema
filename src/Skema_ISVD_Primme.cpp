@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <utility>
+#include <signal.h>
+
 #include "Skema_AlgParams.hpp"
 #include "Skema_Common.hpp"
 #include "Skema_EIGSVD.hpp"
