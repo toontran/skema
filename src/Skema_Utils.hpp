@@ -18,7 +18,7 @@ using memory_space = typename device_type::memory_space;
 using matrix_type = typename Kokkos::View<scalar_type**, layout_type>;
 using unmanaged_matrix_type =
     typename Kokkos::View<scalar_type**,
-                          Kokkos::LayoutLeft,
+                          Kokkos::LayoutRight,
                           Kokkos::HostSpace,
                           Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
 using crs_matrix_type = typename KokkosSparse::
@@ -26,7 +26,7 @@ using crs_matrix_type = typename KokkosSparse::
 using vector_type = typename Kokkos::View<scalar_type*, layout_type>;
 using unmanaged_vector_type =
     typename Kokkos::View<scalar_type*,
-                          Kokkos::LayoutLeft,
+                          Kokkos::LayoutRight,
                           Kokkos::HostSpace,
                           Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
 using index_type = typename Kokkos::View<ordinal_type*, layout_type>;
