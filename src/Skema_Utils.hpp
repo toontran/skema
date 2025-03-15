@@ -9,7 +9,7 @@
 using scalar_type = double;
 using ordinal_type = int;
 using size_type = std::size_t;
-using layout_type = Kokkos::LayoutLeft;
+using layout_type = Kokkos::LayoutRight;
 using device_type = typename Kokkos::Device<
     Kokkos::DefaultExecutionSpace,
     typename Kokkos::DefaultExecutionSpace::memory_space>;
