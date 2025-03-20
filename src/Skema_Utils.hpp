@@ -9,7 +9,7 @@
 using scalar_type = double;
 using ordinal_type = int;
 using size_type = std::size_t;
-using layout_type = Kokkos::LayoutRight;
+using layout_type = Kokkos::LayoutLeft;
 using device_type = typename Kokkos::Device<
     Kokkos::DefaultExecutionSpace,
     typename Kokkos::DefaultExecutionSpace::memory_space>;
@@ -18,7 +18,7 @@ using memory_space = typename device_type::memory_space;
 using matrix_type = typename Kokkos::View<scalar_type**, layout_type>;
 using unmanaged_matrix_type =
     typename Kokkos::View<scalar_type**,
-                          Kokkos::LayoutRight,
+                          Kokkos::LayoutLeft,
                           Kokkos::HostSpace,
                           Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
 using crs_matrix_type = typename KokkosSparse::
@@ -26,7 +26,7 @@ using crs_matrix_type = typename KokkosSparse::
 using vector_type = typename Kokkos::View<scalar_type*, layout_type>;
 using unmanaged_vector_type =
     typename Kokkos::View<scalar_type*,
-                          Kokkos::LayoutRight,
+                          Kokkos::LayoutLeft,
                           Kokkos::HostSpace,
                           Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
 using index_type = typename Kokkos::View<ordinal_type*, layout_type>;
